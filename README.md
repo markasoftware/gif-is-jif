@@ -1,5 +1,14 @@
 # Gif is Jif
 
-Gif is Jif is a project that allows you to easily convert videos to gifs and webms.
-It also has a built-in uploader for gfycat (unfortunately not Imgur because of technical limitations).
-You can use it by running `create.sh` in bash. Note that it will only work in Bash. Not sh. Not zsh. Just bash.
+Gif is Jif is a simple command-line uploader for Gfycat. Yay!
+
+## How to use?
+
+just run `upload.bash` with the filename to upload as an argument. It'll do the rest.
+You'll probably want to mark the script as executable and add it to the $PATH for easier usage.
+
+### Example usage:
+
+```
+bash upload.bash /home/markasoftware/gifs/here-comes-dat-boi.gif
+```
