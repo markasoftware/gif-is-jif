@@ -11,4 +11,5 @@ You'll probably want to mark the script as executable and add it to the $PATH fo
 
 ```
 bash upload.bash /home/markasoftware/gifs/here-comes-dat-boi.gif
+bash upload.bash /home/markasoftware/webms/spooky-doot.webm
 ```

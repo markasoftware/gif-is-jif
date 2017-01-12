@@ -1,16 +1,34 @@
 #!/bin/bash
 
-ABS_PATH=$(readlink -f $1);
-if [[ ! -r $ABS_PATH ]]; then
-    echo "The file at $1 either does not exist or you don't have read permissions for it.";
-    exit 1;
-fi;
-echo "Getting gfycat key and name...";
-GFYCAT_NAME=$(curl -v -XPOST https://api.gfycat.com/v1/gfycats 2> /dev/null | grep -oP "name\":\"[a-zA-Z]*\"" | cut -c 8- | rev | cut -c 2- | rev);
-cp $ABS_PATH /tmp/$GFYCAT_NAME;
-echo "About to upload. This might take a while.";
-echo "There will be no indication of progress until it's complete.";
-curl -i https://filedrop.gfycat.com --upload-file /tmp/$GFYCAT_NAME 2> /dev/null > /dev/null;
-echo "Upload complete. Your gif will be at https://gfycat.com/$GFYCAT_NAME";
-echo "It won't show up yet because Gfycat takes a couple minutes to process the gif";
-exit;
+abs_path=$(readlink -f $1);
+if [[ ! -r $abs_path ]]
+then
+    echo "The file at $1 either does not exist or you don't have read permissions for it."
+    exit 1
+fi
+echo "Getting gfycat key and name..."
+gfycat_name=$(curl -s -XPOST https://api.gfycat.com/v1/gfycats | grep -oP 'name":"[a-zA-Z]+"' | cut -d '"' -f 3)
+cp $abs_path /tmp/$gfycat_name
+echo "About to upload. This might take a while."
+upload_res=$(curl https://filedrop.gfycat.com --upload-file /tmp/$gfycat_name)
+echo "Upload complete. Waiting for remote encoding to complete..."
+echo '(this might take a while)'
+sleep 2
+completed=''
+while [[ -z "$completed" ]]
+do
+    check_res=$(curl -s https://api.gfycat.com/v1/gfycats/fetch/status/$gfycat_name)
+    completed=$(grep -o 'complete' <<< "$check_res")
+    sleep 5
+done
+echo 'Encoding complete.'
+grep -F '"md5Found":1' <<< "$check_res" > /dev/null
+if [[ $? == 0 ]]
+then
+    echo 'It looks like somebody else has uploaded this gif/video before!'
+    echo 'The given link will be to the already uploaded one.'
+fi
+gfy_name_from_fetch=$(grep -oP 'gfyname":"[a-zA-Z]+"' <<< "$check_res" | cut -d '"' -f 3)
+echo "Your gif/video should be at https://gfycat.com/$gfy_name_from_fetch"
+echo 'Have a nice day!'
+exit
