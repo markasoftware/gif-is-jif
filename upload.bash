@@ -1,16 +1,16 @@
 #!/bin/bash
 
-abs_path=$(readlink -f $1);
-if [[ ! -r $abs_path ]]
+abs_path=$(readlink -f "$1");
+if [[ ! -r "$abs_path" ]]
 then
     echo "The file at $1 either does not exist or you don't have read permissions for it."
     exit 1
 fi
 echo "Getting gfycat key and name..."
 gfycat_name=$(curl -s -XPOST https://api.gfycat.com/v1/gfycats | grep -oP 'name":"[a-zA-Z]+"' | cut -d '"' -f 3)
-cp $abs_path /tmp/$gfycat_name
+cp "$abs_path" "/tmp/$gfycat_name"
 echo "About to upload. This might take a while."
-upload_res=$(curl https://filedrop.gfycat.com --upload-file /tmp/$gfycat_name)
+upload_res=$(curl https://filedrop.gfycat.com --upload-file "/tmp/$gfycat_name")
 echo "Upload complete. Waiting for remote encoding to complete..."
 echo '(this might take a while)'
 sleep 2
