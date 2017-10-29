@@ -7,11 +7,12 @@ then
     exit 1
 fi
 echo "Getting gfycat key and name..."
-gfycat_name=$(curl -s -XPOST https://api.gfycat.com/v1/gfycats | grep -oP 'name":"[a-zA-Z]+"' | cut -d '"' -f 3)
+gfycat_name=$(curl -s -XPOST https://api.gfycat.com/v1/gfycats | grep -oP 'gfyname":"[a-zA-Z]+"' | cut -d '"' -f 3)
 cp "$abs_path" "/tmp/$gfycat_name"
 echo "About to upload. This might take a while."
 upload_res=$(curl https://filedrop.gfycat.com --upload-file "/tmp/$gfycat_name")
 echo "Upload complete. Waiting for remote encoding to complete..."
+echo "Uploaded as https://gfycat.com/${gfycat_name}"
 echo '(this might take a while)'
 sleep 2
 completed=''
