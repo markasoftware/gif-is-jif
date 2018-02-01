@@ -1,3 +1,7 @@
+# Deprecated
+
+Gif is jif is deprecated. Use [AnyPaste](https://anypaste.xyz) ([GitHub link](https://github.com/markasoftware/anypaste)) instead.
+
 # Gif is Jif
 
 Gif is Jif is a simple command-line uploader for Gfycat. Yay!
